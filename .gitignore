@@ -1,0 +1,23 @@
+node_modules
+dist
+dev-dist
+.env
+*.local
+.DS_Store
+*.tsbuildinfo
+*.log
+scratchpad
+# Capacitor (native build output; sumber android/ & ios/ tetap di-commit)
+android/app/build
+android/build
+android/.gradle
+android/local.properties
+android/app/src/main/assets/public
+android/app/src/main/assets/capacitor.config.json
+android/app/src/main/assets/capacitor.plugins.json
+android/capacitor-cordova-android-plugins
+ios/App/Pods
+ios/App/App/public
+ios/App/App/capacitor.config.json
+ios/App/build
+ios/capacitor-cordova-ios-plugins

@@ -1,0 +1,122 @@
+/* BVRooms Customer App theme: Tailwind v4 CSS-first. Palet mengikuti Figma "Premirooms" (Flat UI): hijau #2ECC71,
+   merah #E74C3C, kuning #F4D03F, teks #202020, font Manrope. Token netral/semantik dari tokens.css (backend).
+   White-label (D1): --bvr-brand-* dapat ditimpa runtime dari app-config.organization.primary_color (lihat app/app-config.tsx). */
+@import "tailwindcss";
+@import "./tokens.css";
+
+:root {
+  --bvr-brand-50: #eafaf1;
+  --bvr-brand-100: #d5f5e3;
+  --bvr-brand-200: #abebc6;
+  --bvr-brand-400: #62d995;
+  --bvr-brand-500: #2ecc71;
+  --bvr-brand-600: #27ae60;
+  --bvr-brand-700: #1e8449;
+  --bvr-red: #e74c3c;
+  --bvr-red-soft: #fdedec;
+  --bvr-yellow: #f4d03f;
+  --bvr-yellow-soft: #fef9e7;
+  --bvr-text: #202020;
+  --bvr-muted: #8a94a6;
+  --bvr-line: #e9edf2;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  color-scheme: light;
+}
+
+@theme {
+  --color-brand-50: var(--bvr-brand-50);
+  --color-brand-100: var(--bvr-brand-100);
+  --color-brand-200: var(--bvr-brand-200);
+  --color-brand-400: var(--bvr-brand-400);
+  --color-brand-500: var(--bvr-brand-500);
+  --color-brand-600: var(--bvr-brand-600);
+  --color-brand-700: var(--bvr-brand-700);
+
+  --color-danger: var(--bvr-red);
+  --color-danger-soft: var(--bvr-red-soft);
+  --color-star: var(--bvr-yellow);
+  --color-star-soft: var(--bvr-yellow-soft);
+  --color-success: var(--bv-success-600);
+  --color-success-soft: var(--bv-success-100);
+  --color-warning: var(--bv-warning-600);
+  --color-warning-soft: var(--bv-warning-100);
+  --color-info: var(--bv-info-600);
+  --color-info-soft: var(--bv-info-100);
+
+  --color-neutral-50: var(--bv-neutral-50);
+  --color-neutral-100: var(--bv-neutral-100);
+  --color-neutral-200: var(--bv-neutral-200);
+  --color-neutral-300: var(--bv-neutral-300);
+  --color-neutral-400: var(--bv-neutral-400);
+  --color-neutral-500: var(--bv-neutral-500);
+  --color-neutral-600: var(--bv-neutral-600);
+  --color-neutral-700: var(--bv-neutral-700);
+  --color-neutral-800: var(--bv-neutral-800);
+  --color-neutral-900: var(--bv-neutral-900);
+
+  --color-background: #ffffff;
+  --color-surface: #f7f8fa;
+  --color-card: #ffffff;
+  --color-foreground: var(--bvr-text);
+  --color-muted: var(--bvr-muted);
+  --color-border: var(--bvr-line);
+  --color-ring: var(--bvr-brand-500);
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 20px;
+  --font-sans: "Manrope", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --shadow-card: 0 2px 12px rgb(16 24 40 / 0.08);
+  --shadow-float: 0 8px 24px rgb(16 24 40 / 0.12);
+  --shadow-modal: 0 24px 48px rgb(0 0 0 / 0.18);
+}
+
+/* Reset dasar HARUS di @layer base: CSS tanpa layer mengalahkan utility Tailwind (mis. button { color: inherit }
+   akan menimpa .text-white pada tombol hijau). */
+@layer base {
+  html, body, #root { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--color-background);
+    color: var(--bvr-text);
+    font-family: var(--font-sans);
+    font-size: 14px;
+    line-height: 20px;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+    overscroll-behavior-y: none;
+  }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  img { max-width: 100%; display: block; }
+  input::placeholder, textarea::placeholder { color: var(--bv-neutral-400); }
+}
+
+@layer utilities {
+  .pt-safe { padding-top: var(--safe-top); }
+  .pb-safe { padding-bottom: var(--safe-bottom); }
+  .no-scrollbar { scrollbar-width: none; }
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .tap { transition: transform 120ms ease, opacity 120ms ease; }
+  .tap:active { transform: scale(0.98); opacity: 0.9; }
+  .snap-row { scroll-snap-type: x mandatory; }
+  .snap-item { scroll-snap-align: start; }
+  .dashed-line { border-top: 1px dashed var(--bv-neutral-300); }
+}
+
+/* halaman: lebar maks 480px di layar besar agar tetap terasa aplikasi mobile */
+.app-shell { max-width: 480px; margin: 0 auto; min-height: 100%; background: var(--color-background); position: relative; }
+@media (min-width: 520px) { .app-shell { box-shadow: 0 0 0 1px var(--bv-neutral-200), 0 12px 40px rgb(16 24 40 / 0.08); } }
+
+@keyframes bvr-fade-up { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.fade-up { animation: bvr-fade-up 220ms ease-out both; }
+@keyframes bvr-sheet-up { from { transform: translateY(100%); } to { transform: none; } }
+.sheet-up { animation: bvr-sheet-up 240ms cubic-bezier(.2,.8,.2,1) both; }
+@keyframes bvr-pulse { 0%,100% { opacity: 1; } 50% { opacity: .45; } }
+.skeleton { background: var(--bv-neutral-200); border-radius: 8px; animation: bvr-pulse 1.4s ease-in-out infinite; }
+@keyframes bvr-ring { 0% { transform: scale(0.9); opacity: .6; } 100% { transform: scale(1.35); opacity: 0; } }
+.ring-pulse::before { content: ""; position: absolute; inset: 0; border-radius: 9999px; background: currentColor; opacity: .25; animation: bvr-ring 1.6s ease-out infinite; }
+@keyframes bvr-toast-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+.toast-in { animation: bvr-toast-in 200ms ease-out both; }
