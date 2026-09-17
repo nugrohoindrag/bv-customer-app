@@ -8,6 +8,7 @@ const OnboardingPage = lazy(() => import("@/features/onboarding/OnboardingPage")
 const PhonePage = lazy(() => import("@/features/auth/PhonePage"));
 const OtpPage = lazy(() => import("@/features/auth/OtpPage"));
 const RegisterPage = lazy(() => import("@/features/auth/RegisterPage"));
+const ChangePinPage = lazy(() => import("@/features/account/ChangePinPage"));
 const HomePage = lazy(() => import("@/features/home/HomePage"));
 const CatalogPage = lazy(() => import("@/features/catalog/CatalogPage"));
 const PropertyPage = lazy(() => import("@/features/property/PropertyPage"));
@@ -122,6 +123,7 @@ export const router = createBrowserRouter([
           { path: "/account", element: <AccountPage /> },
           { path: "/account/edit", element: <EditAccountPage /> },
           { path: "/account/otp", element: <OtpPage /> },
+          { path: "/account/pin", element: <ChangePinPage /> },
         ],
       },
       { path: "*", element: <NotFound /> },

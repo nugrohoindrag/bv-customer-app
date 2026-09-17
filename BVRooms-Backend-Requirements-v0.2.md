@@ -413,7 +413,7 @@ Diimplementasikan di repo ini (`customer-booking-app`, React 19 + Vite + Tailwin
 | Artboard | Route | Status |
 |---|---|---|
 | SPLASH / LANDING / WELCOME | `/welcome` (splash → 2 slide → welcome; teks & nama dari `app-config`; Masuk / Daftar / Masuk Sebagai Guest) | ✅ |
-| LOGIN - REGISTER | `/login`, `/login/otp`, `/register`, `/register/otp` (OTP 4 digit, countdown 1:39, Kirim Ulang, `dev_code` mock, error per field) | ✅ |
+| LOGIN - REGISTER | `/login` (nomor HP + PIN 4 digit), `/register` (nama, email, HP, buat PIN + konfirmasi) — mode PIN default (`features.auth_method`), akun lama PIN default `1234`; mode OTP: `/login/otp`, `/register/otp` (OTP 4 digit, countdown 1:39, Kirim Ulang, `dev_code` mock) | ✅ |
 | HOME - LIST PROPERTY | `/home` (widget tanggal/kamar, search, chip Terdekat + properti org, banner, Jelajahi), `/catalog` (tab All/Apartement/Hotel, sort sheet, empty, offline) | ✅ |
 | DETAIL PROPERTY | `/property/:slug` (galeri, ♥, share, Arahkan, tab anchor, deskripsi/amenities/policies + sheet, kategori kamar Terpilih/Pilih/Penuh, add-on Breakfast/Extra Bed dinamis, ratings, guest details, total) · `/property/:slug/photos` | ✅ |
 | MAPS DIRECTION - BOOKING SETUP - EXTRA BEDS | Arahkan → Google Maps; `/search/dates` (kalender range), `/search/guests` (Tambah Room, tamu/anak/extra bed per kamar) | ✅ |
@@ -425,6 +425,8 @@ Diimplementasikan di repo ini (`customer-booking-app`, React 19 + Vite + Tailwin
 | BERI RATING | `/bookings/:code/review` (bintang + emoji/label; tampil kembali di detail) | ✅ |
 | SAVED SECTION | `/saved` (grid + search, toggle ♥ optimistic) | ✅ |
 | INBOX SECTION | `/inbox` (geser kiri hapus, tandai dibaca, Web Push VAPID via `public/push-sw.js`) | ✅ |
-| AKUN SECTION | `/account`, `/account/edit` (ganti HP → OTP `change_phone`), Log Out | ✅ |
+| AKUN SECTION | `/account`, `/account/edit` (ganti HP → konfirmasi PIN; mode OTP → OTP `change_phone`), `/account/pin` (Ubah PIN), Log Out | ✅ |
+
+Auth PIN (17 Sep 2026, D3 vendor SMS masih di-hold): backend `POST /bvrooms/auth/pin/login | pin/register | pin/change` (argon2id, 5 gagal → kunci 15 menit), kolom `bvrooms_customers.pin_hash` (NULL = PIN default `BV_BVROOMS_DEFAULT_PIN`, bawaan 1234), `PATCH customers/me` menerima `pin` untuk ganti nomor. Saklar `BV_BVROOMS_AUTH=pin|otp` → `app-config.features.auth_method`; client memilih alur tanpa rebuild.
 
 Native: Capacitor 7 — `android/` (APK debug terbangun dengan JDK 21 portable `D:\tools\jdk-21`) dan `ios/` (build di Xcode/macOS). Lihat README.

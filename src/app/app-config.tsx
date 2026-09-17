@@ -8,7 +8,7 @@ import { loadJSON, saveJSON } from "@/lib/storage";
 
 const FALLBACK: AppConfig = {
   organization: { id: "", slug: import.meta.env.VITE_ORG_SLUG || "", name: "BVRooms", logo_url: null, primary_color: null, welcome_title: "Selamat datang di BVRooms!", welcome_body: "Mau pesan kamar hotel dengan harga terpercaya, mudah, dan pelayanan terbaik? Di BVRooms semua bisa!" },
-  features: { pay_at_property: false, online_payment: false, web_push: false, otp_provider: "mock" },
+  features: { pay_at_property: false, online_payment: false, web_push: false, otp_provider: "mock", auth_method: "pin" },
   listed_count: 0,
   single_property_slug: null,
   default_category: "all",

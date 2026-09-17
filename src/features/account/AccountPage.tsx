@@ -1,7 +1,7 @@
 // Figma AKUN SECTION: avatar inisial (biru), nama, HP, email, "Edit Data Akun ✎", Log Out (merah outline) di bawah.
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Pencil } from "lucide-react";
+import { KeyRound, Pencil } from "lucide-react";
 import { useAuth } from "@/app/auth";
 import { Button } from "@/components/ui/button";
 import { ConfirmDialog } from "@/components/ui/sheet";
@@ -33,6 +33,9 @@ export default function AccountPage() {
         <Button block className="mt-4" onClick={() => nav("/account/edit")}>
           Edit Data Akun <Pencil size={13} />
         </Button>
+        <Button block variant="outline" className="mt-2" onClick={() => nav("/account/pin")}>
+          Ubah PIN <KeyRound size={13} />
+        </Button>
         <div className="flex-1" />
         <Button block variant="danger-outline" className="mt-10" onClick={() => setConfirm(true)}>
           Log Out
@@ -48,7 +51,7 @@ export default function AccountPage() {
           · v{__APP_VERSION__}
         </p>
       </div>
-      <ConfirmDialog open={confirm} title="Keluar dari akun?" body="Kamu perlu masuk kembali dengan OTP untuk melihat booking." confirmLabel="Log Out" cancelLabel="Batal" danger onConfirm={doLogout} onCancel={() => setConfirm(false)} loading={busy} />
+      <ConfirmDialog open={confirm} title="Keluar dari akun?" body="Kamu perlu masuk kembali dengan nomor HP dan PIN untuk melihat booking." confirmLabel="Log Out" cancelLabel="Batal" danger onConfirm={doLogout} onCancel={() => setConfirm(false)} loading={busy} />
     </Page>
   );
 }

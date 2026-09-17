@@ -2,7 +2,7 @@
 
 export interface AppConfig {
   organization: { id: string; slug: string; name: string; logo_url: string | null; primary_color: string | null; welcome_title: string; welcome_body: string };
-  features: { pay_at_property: boolean; online_payment: boolean; web_push: boolean; vapid_public_key?: string; otp_provider: string };
+  features: { pay_at_property: boolean; online_payment: boolean; web_push: boolean; vapid_public_key?: string; otp_provider: string; auth_method?: "pin" | "otp" };
   listed_count: number;
   single_property_slug: string | null;
   default_category: string;
@@ -36,6 +36,7 @@ export interface AuthResult {
   token_type?: string;
   customer?: Customer;
   otp_token?: string;
+  pin_is_default?: boolean; // login PIN: akun masih memakai PIN default → ajak ganti PIN
 }
 
 export type ListingCategory = "hotel" | "apartment";

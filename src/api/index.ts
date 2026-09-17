@@ -55,6 +55,11 @@ export const api = {
     http<AuthResult>("auth/otp/verify", { body: { organization_slug: ORG_SLUG, phone, code, purpose, device_id: deviceId() }, auth: false }),
   register: (otp_token: string, full_name: string, email: string) =>
     http<AuthResult>("auth/register", { body: { organization_slug: ORG_SLUG, otp_token, full_name, email, device_id: deviceId() }, auth: false }),
+  // PIN (vendor SMS di-hold): login/daftar tanpa OTP
+  pinLogin: (phone: string, pin: string) => http<AuthResult>("auth/pin/login", { body: { organization_slug: ORG_SLUG, phone, pin, device_id: deviceId() }, auth: false }),
+  pinRegister: (input: { phone: string; full_name: string; email: string; pin: string }) =>
+    http<AuthResult>("auth/pin/register", { body: { organization_slug: ORG_SLUG, ...input, device_id: deviceId() }, auth: false }),
+  pinChange: (current_pin: string, new_pin: string) => http<{ ok: boolean }>("auth/pin/change", { body: { current_pin, new_pin } }),
   logout: () => http<void>("auth/logout", { method: "POST", body: {} }),
 
   // ---- katalog (publik) ----
@@ -68,7 +73,7 @@ export const api = {
 
   // ---- customer ----
   me: () => http<Customer>("customers/me"),
-  updateMe: (input: { full_name?: string; email?: string; phone?: string; otp_token?: string; locale?: string }) => http<Customer>("customers/me", { method: "PATCH", body: input }),
+  updateMe: (input: { full_name?: string; email?: string; phone?: string; otp_token?: string; pin?: string; locale?: string }) => http<Customer>("customers/me", { method: "PATCH", body: input }),
   wishlist: (q?: string) => http<ListResponse<PropertyCard>>("customers/me/wishlist", { query: { q } }),
   addWishlist: (property_id: string) => http<{ property_id: string; is_wishlisted: boolean }>("customers/me/wishlist", { body: { property_id } }),
   removeWishlist: (property_id: string) => http<void>(`customers/me/wishlist/${property_id}`, { method: "DELETE" }),

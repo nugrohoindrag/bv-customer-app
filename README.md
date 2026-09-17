@@ -1,6 +1,6 @@
 # BVRooms Customer Booking App (PWA + Android/iOS)
 
-Aplikasi customer white-label per organisasi (brand hotel / pengelola apartemen) untuk booking kamar & unit: onboarding, login/daftar OTP, katalog properti, detail & kategori kamar + add-on, booking multi-kamar, pembayaran manual (transfer + bukti / bayar di tempat), status booking, cancel, ubah data tamu, rating, saved, inbox, akun. UI mengikuti 14 artboard Figma di `Figma UI/` (brand Figma "Premirooms" → BVRooms). Backend: BuildingVision API `/api/v1/bvrooms/*` (repo `buildingvision/api`, modul `internal/bvrooms`) — lihat `BVRooms-Backend-Requirements-v0.2.md`.
+Aplikasi customer white-label per organisasi (brand hotel / pengelola apartemen) untuk booking kamar & unit: onboarding, login/daftar dengan nomor HP + PIN (OTP SMS tersedia saat vendor terpasang), katalog properti, detail & kategori kamar + add-on, booking multi-kamar, pembayaran manual (transfer + bukti / bayar di tempat), status booking, cancel, ubah data tamu, rating, saved, inbox, akun. UI mengikuti 14 artboard Figma di `Figma UI/` (brand Figma "Premirooms" → BVRooms). Backend: BuildingVision API `/api/v1/bvrooms/*` (repo `buildingvision/api`, modul `internal/bvrooms`) — lihat `BVRooms-Backend-Requirements-v0.2.md`.
 
 Dibangun sebagai **PWA** (installable, offline data terakhir, Web Push) dan dibungkus **Capacitor** untuk build **Android (APK/AAB)** dan **iOS (Xcode)** dari satu codebase.
 
@@ -12,7 +12,7 @@ React 19 · Vite 8 · TypeScript · Tailwind v4 · TanStack Query · React Route
 
 ```text
 src/
-├── app/            # router (guard auth/guest), AuthProvider (sesi OTP + refresh), AppConfigProvider (branding org, white-label warna), SearchProvider (tanggal/kamar/tamu), prompt update SW
+├── app/            # router (guard auth/guest), AuthProvider (sesi PIN/OTP + refresh), AppConfigProvider (branding org, white-label warna), SearchProvider (tanggal/kamar/tamu), prompt update SW
 ├── api/            # klien /api/v1/bvrooms/* + tipe respons backend
 ├── components/     # ui (button, field, shell/bottom-nav, sheet, toast, calendar, otp-input, misc), ilustrasi SVG, kartu properti/booking, widget pencarian
 ├── features/       # onboarding, auth, home, catalog, property, search, booking (proses/list/detail/bayar/cancel/guest/review), saved, inbox (+ push), account, legal
@@ -37,7 +37,7 @@ npm run dev                     # http://localhost:5176 (proxy /api → backend 
 | `VITE_API_BASE` | base URL API absolut. Kosong = relatif `/api` (dev proxy / reverse-proxy). **Wajib** untuk build native, mis. `https://api.buildingvision.id` |
 | `BV_API_URL` | target proxy dev/preview |
 
-Backend dev: `bvctl seed --demo` sudah menyediakan org `graha-pangeran` (2 properti listed: hotel & apartemen, add-on, promo). OTP memakai provider `mock`: kode tampil di layar OTP (`dev_code`, hanya env local/test).
+Backend dev: `bvctl seed --demo` sudah menyediakan org `graha-pangeran` (2 properti listed: hotel & apartemen, add-on, promo). Login default memakai PIN 4 digit (`features.auth_method="pin"` dari app-config; akun lama PIN default `1234`, endpoint `auth/pin/login|register|change`). Mode OTP (`BV_BVROOMS_AUTH=otp`) memakai provider `mock`: kode tampil di layar OTP (`dev_code`, hanya env local/test).
 
 ## Perintah
 
@@ -83,4 +83,4 @@ npx cap open ios      # Xcode → Signing & Capabilities (Team) → Product ▸ 
 
 ## Alur yang sudah diuji (Edge headless, backend dev)
 
-Onboarding → Daftar (validasi form, OTP mock, salah kode) → Home → Daftar Property (sort, tab, empty state) → tanggal & kamar/tamu → Detail (kategori kamar Terpilih/Penuh, add-on, sheet) → Booking (loading → berhasil) → Detail booking (countdown, salin ID) → Pilih metode → instruksi transfer → Modify Guest → Inbox → Saved → Akun (ubah HP via OTP) → Cancel booking → History → Log Out → Masuk → Guest → offline (SW menampilkan data terakhir).
+Onboarding → Daftar (validasi form, PIN + konfirmasi) → Home → Daftar Property (sort, tab, empty state) → tanggal & kamar/tamu → Detail (kategori kamar Terpilih/Penuh, add-on, sheet) → Booking (loading → berhasil) → Detail booking (countdown, salin ID) → Pilih metode → instruksi transfer → Modify Guest → Inbox → Saved → Akun (ubah HP dengan konfirmasi PIN, Ubah PIN) → Cancel booking → History → Log Out → Masuk → Guest → offline (SW menampilkan data terakhir).

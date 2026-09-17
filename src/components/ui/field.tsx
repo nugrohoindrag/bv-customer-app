@@ -1,5 +1,6 @@
 // Input gaya Figma: label kecil abu di atas, garis bawah tipis, pesan error merah kecil di bawah. Varian PhoneField "+62 | 8123456789".
-import { forwardRef, useId, type InputHTMLAttributes, type ReactNode } from "react";
+import { forwardRef, useId, useState, type InputHTMLAttributes, type ReactNode } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface FieldProps extends Omit<InputHTMLAttributes<HTMLInputElement>, "prefix"> {
@@ -29,6 +30,33 @@ export const Field = forwardRef<HTMLInputElement, FieldProps>(function Field({ l
       </div>
       {error ? <p className="mt-1 text-[11px] text-danger">{error}</p> : hint ? <p className="mt-1 text-[11px] text-neutral-400">{hint}</p> : null}
     </div>
+  );
+});
+
+// PIN 4 digit (pengganti OTP): input numerik tersembunyi + tombol lihat.
+export const PinField = forwardRef<HTMLInputElement, Omit<FieldProps, "prefix" | "suffix" | "type">>(function PinField({ onChange, ...props }, ref) {
+  const [show, setShow] = useState(false);
+  return (
+    <Field
+      ref={ref}
+      type={show ? "text" : "password"}
+      inputMode="numeric"
+      pattern="[0-9]*"
+      maxLength={4}
+      autoComplete="off"
+      placeholder="4 digit angka"
+      className="tracking-[0.4em]"
+      onChange={(e) => {
+        e.target.value = e.target.value.replace(/\D/g, "").slice(0, 4);
+        onChange?.(e);
+      }}
+      suffix={
+        <button type="button" tabIndex={-1} onClick={() => setShow((s) => !s)} className="tap p-1 text-neutral-400" aria-label={show ? "Sembunyikan PIN" : "Lihat PIN"}>
+          {show ? <EyeOff size={16} /> : <Eye size={16} />}
+        </button>
+      }
+      {...props}
+    />
   );
 });
 
