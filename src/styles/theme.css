@@ -19,7 +19,8 @@
   --bvr-text: #202020;
   --bvr-muted: #8a94a6;
   --bvr-line: #e9edf2;
-  --safe-top: env(safe-area-inset-top, 0px);
+  /* min 12px: di browser/PWA non-standalone inset = 0 sehingga header terlalu mepet ke atas */
+  --safe-top: max(env(safe-area-inset-top, 0px), 12px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   color-scheme: light;
 }
