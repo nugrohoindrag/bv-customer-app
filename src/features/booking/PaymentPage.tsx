@@ -31,10 +31,12 @@ export default function PaymentPage() {
 
   async function onFile(f: File | undefined) {
     if (!f) return;
-    if (f.size > 5 << 20) return toast.error("Ukuran file maksimal 5 MB");
+    if (!f.type.startsWith("image/") && f.size > 5 << 20) return toast.error("Ukuran dokumen maksimal 5 MB");
     setUploading(true);
     try {
-      const blob = f.type.startsWith("image/") && f.type !== "image/webp" ? await compress(f) : f;
+      // foto dikompres ke ≤500 KB (batas server BV_MAX_IMAGE_BYTES); PDF dikirim apa adanya
+      const blob = f.type.startsWith("image/") ? await compress(f) : f;
+      if (blob.type.startsWith("image/") && blob.size > MAX_IMAGE_BYTES) return toast.error("Foto terlalu besar setelah kompresi (maks 500 KB)");
       const updated = await uploadProof(code, blob);
       qc.setQueryData(["booking", code], updated);
       qc.invalidateQueries({ queryKey: ["bookings"] });
@@ -148,16 +150,37 @@ function CopyLink({ text, label, onDone }: { text: string; label: string; onDone
   );
 }
 
-/** Kompres foto bukti ≤1600px JPEG q0.8 (pola Tenant PWA). */
-async function compress(file: File): Promise<Blob> {
+/** Batas foto server (BV_MAX_IMAGE_BYTES). */
+const MAX_IMAGE_BYTES = 500 * 1024;
+
+/** Kompres foto bukti sampai ≤500 KB: ≤1600px, kualitas JPEG turun bertahap (0.8→0.4), lalu dimensi 0.8× berulang. */
+async function compress(file: File, limit = MAX_IMAGE_BYTES): Promise<Blob> {
   try {
     const bmp = await createImageBitmap(file);
-    const scale = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+    const s0 = Math.min(1, 1600 / Math.max(bmp.width, bmp.height));
+    let w = Math.round(bmp.width * s0);
+    let h = Math.round(bmp.height * s0);
     const c = document.createElement("canvas");
-    c.width = Math.round(bmp.width * scale);
-    c.height = Math.round(bmp.height * scale);
-    c.getContext("2d")!.drawImage(bmp, 0, 0, c.width, c.height);
-    return await new Promise<Blob>((res, rej) => c.toBlob((b) => (b ? res(b) : rej(new Error("compress"))), "image/jpeg", 0.8));
+    const ctx = c.getContext("2d")!;
+    const encode = (q: number) =>
+      new Promise<Blob>((res, rej) => {
+        c.width = w;
+        c.height = h;
+        ctx.drawImage(bmp, 0, 0, w, h);
+        c.toBlob((b) => (b ? res(b) : rej(new Error("compress"))), "image/jpeg", q);
+      });
+    let q = 0.8;
+    let out = await encode(q);
+    for (let i = 0; i < 12 && out.size > limit; i++) {
+      if (q > 0.4) q = Math.max(0.4, q - 0.1);
+      else {
+        w = Math.round(w * 0.8);
+        h = Math.round(h * 0.8);
+      }
+      out = await encode(q);
+    }
+    bmp.close?.();
+    return out;
   } catch {
     return file;
   }
